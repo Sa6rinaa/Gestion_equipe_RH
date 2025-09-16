@@ -1,0 +1,324 @@
+/* Responsive Design */
+
+/* Large screens (1200px+) */
+@media (min-width: 1200px) {
+    .container {
+        padding: 30px;
+    }
+    
+    .main-grid {
+        gap: 40px;
+    }
+    
+    .bottom-grid {
+        gap: 40px;
+    }
+}
+
+/* Medium screens (768px - 1199px) */
+@media (max-width: 1199px) {
+    .main-grid {
+        grid-template-columns: 1fr 1fr;
+        gap: 25px;
+    }
+    
+    .card {
+        padding: 25px;
+    }
+    
+    .logo h1 {
+        font-size: 24px;
+    }
+    
+    .stat-number {
+        font-size: 28px;
+    }
+}
+
+/* Small screens (768px and below) */
+@media (max-width: 768px) {
+    .container {
+        padding: 15px;
+    }
+    
+    .main-grid {
+        grid-template-columns: 1fr;
+        gap: 20px;
+        margin-bottom: 20px;
+    }
+    
+    .bottom-grid {
+        gap: 20px;
+    }
+    
+    .card {
+        padding: 20px;
+        border-radius: 15px;
+    }
+    
+    .card-header {
+        margin-bottom: 20px;
+    }
+    
+    .card-title {
+        font-size: 16px;
+    }
+    
+    .header-content {
+        flex-direction: column;
+        text-align: center;
+        gap: 15px;
+    }
+    
+    .logo {
+        justify-content: center;
+    }
+    
+    .logo h1 {
+        font-size: 22px;
+    }
+    
+    .logo-icon {
+        width: 45px;
+        height: 45px;
+        font-size: 20px;
+    }
+    
+    .mood-selector {
+        grid-template-columns: repeat(3, 1fr);
+        gap: 10px;
+    }
+    
+    .mood-option {
+        padding: 12px;
+    }
+    
+    .mood-emoji {
+        font-size: 28px;
+        margin-bottom: 6px;
+    }
+    
+    .mood-label {
+        font-size: 11px;
+    }
+    
+    .stats-grid {
+        grid-template-columns: 1fr;
+        gap: 15px;
+        margin-bottom: 20px;
+    }
+    
+    .stat-card {
+        padding: 15px;
+    }
+    
+    .stat-number {
+        font-size: 24px;
+    }
+    
+    .feedback-form {
+        gap: 12px;
+    }
+    
+    .form-control {
+        padding: 10px 12px;
+        font-size: 16px; /* Évite le zoom sur iOS */
+    }
+    
+    .btn {
+        padding: 12px 20px;
+        font-size: 16px; /* Évite le zoom sur iOS */
+    }
+    
+    .survey-item {
+        padding: 15px;
+    }
+    
+    .survey-meta {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 8px;
+    }
+    
+    .training-item {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+        padding: 12px 0;
+    }
+    
+    .notification {
+        top: 10px;
+        right: 10px;
+        left: 10px;
+        max-width: none;
+        padding: 12px 15px;
+        font-size: 14px;
+    }
+}
+
+/* Extra small screens (480px and below) */
+@media (max-width: 480px) {
+    .container {
+        padding: 10px;
+    }
+    
+    header {
+        padding: 15px;
+        margin-bottom: 20px;
+    }
+    
+    .logo h1 {
+        font-size: 20px;
+    }
+    
+    .logo-icon {
+        width: 40px;
+        height: 40px;
+        font-size: 18px;
+    }
+    
+    .card {
+        padding: 15px;
+    }
+    
+    .card-icon {
+        width: 40px;
+        height: 40px;
+        font-size: 18px;
+    }
+    
+    .mood-selector {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 8px;
+    }
+    
+    .mood-option {
+        padding: 10px;
+    }
+    
+    .mood-emoji {
+        font-size: 24px;
+    }
+    
+    .mood-label {
+        font-size: 10px;
+    }
+    
+    .form-control {
+        padding: 8px 10px;
+    }
+    
+    textarea.form-control {
+        min-height: 80px;
+    }
+    
+    .btn {
+        padding: 10px 16px;
+    }
+    
+    .stat-number {
+        font-size: 20px;
+    }
+    
+    .survey-title {
+        font-size: 14px;
+    }
+    
+    .training-info h3 {
+        font-size: 14px;
+    }
+}
+
+/* Orientation landscape sur mobile */
+@media (max-width: 768px) and (orientation: landscape) {
+    .mood-selector {
+        grid-template-columns: repeat(5, 1fr);
+    }
+    
+    .main-grid {
+        grid-template-columns: 1fr 1fr;
+    }
+    
+    .stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+/* High DPI screens */
+@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+    .card {
+        box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.15);
+    }
+    
+    .btn-primary:hover {
+        box-shadow: 0 10px 20px rgba(102, 126, 234, 0.4);
+    }
+}
+
+/* Print styles */
+@media print {
+    * {
+        box-shadow: none !important;
+        text-shadow: none !important;
+    }
+    
+    body {
+        background: white !important;
+        color: black !important;
+    }
+    
+    .notification,
+    .btn,
+    .mood-selector {
+        display: none !important;
+    }
+    
+    .card {
+        background: white !important;
+        border: 1px solid #ccc !important;
+        page-break-inside: avoid;
+        margin-bottom: 20px;
+    }
+    
+    .main-grid,
+    .bottom-grid {
+        grid-template-columns: 1fr !important;
+        gap: 20px;
+    }
+}
+
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+    
+    .animate-in {
+        animation: none;
+    }
+    
+    .card:hover {
+        transform: none;
+    }
+    
+    .btn-primary:hover {
+        transform: none;
+    }
+}
+
+/* Focus visible for keyboard navigation */
+@supports selector(:focus-visible) {
+    .mood-option:focus {
+        outline: none;
+    }
+    
+    .mood-option:focus-visible {
+        outline: 2px solid var(--primary);
+        outline-offset: 2px;
+    }
+}
