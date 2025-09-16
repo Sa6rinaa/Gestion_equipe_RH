@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RH Dashboard - Gestion d'Équipe</title>
+    <link rel="stylesheet" href="assets/css/styles.css">
+    <link rel="stylesheet" href="assets/css/responsive.css">
+    <meta name="description" content="Dashboard RH pour la gestion d'équipe, feedback et sondages">
+    <meta name="keywords" content="RH, dashboard, feedback, sondages, équipe, management">
+</head>
+<body>
+    <div class="container">
+        <header class="animate-in">
+            <div class="header-content">
+                <div class="logo">
+                    <div class="logo-icon">HR</div>
+                    <h1>Dashboard RH</h1>
+                </div>
+                <div class="user-info">
+                    <div class="avatar">MG</div>
+                    <div>
+                        <div style="font-weight: 600;">Manager RH</div>
+                        <div style="font-size: 12px; opacity: 0.8;">En ligne</div>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <main>
+            <div class="main-grid">
+                <!-- Baromètre d'humeur -->
+                <section class="card animate-in" aria-labelledby="mood-title">
+                    <header class="card-header">
+                        <div class="card-icon" aria-hidden="true">😊</div>
+                        <h2 class="card-title" id="mood-title">Baromètre d'Humeur</h2>
+                    </header>
+                    
+                    <div class="mood-selector" id="moodSelector" role="radiogroup" aria-labelledby="mood-title">
+                        <div class="mood-option" data-mood="1" role="radio" aria-checked="false" tabindex="0">
+                            <div class="mood-emoji" aria-hidden="true">😢</div>
+                            <div class="mood-label">Triste</div>
+                        </div>
+                        <div class="mood-option" data-mood="2" role="radio" aria-checked="false" tabindex="0">
+                            <div class="mood-emoji" aria-hidden="true">😕</div>
+                            <div class="mood-label">Moyen</div>
+                        </div>
+                        <div class="mood-option selected" data-mood="3" role="radio" aria-checked="true" tabindex="0">
+                            <div class="mood-emoji" aria-hidden="true">😐</div>
+                            <div class="mood-label">Neutre</div>
+                        </div>
+                        <div class="mood-option" data-mood="4" role="radio" aria-checked="false" tabindex="0">
+                            <div class="mood-emoji" aria-hidden="true">😊</div>
+                            <div class="mood-label">Content</div>
+                        </div>
+                        <div class="mood-option" data-mood="5" role="radio" aria-checked="false" tabindex="0">
+                            <div class="mood-emoji" aria-hidden="true">😄</div>
+                            <div class="mood-label">Excellent</div>
+                        </div>
+                    </div>
+
+                    <button class="btn btn-primary" onclick="submitMood()" aria-describedby="mood-description">
+                        <span id="moodBtnText">Enregistrer</span>
+                    </button>
+
+                    <div class="progress-bar" role="progressbar" aria-valuenow="68" aria-valuemin="0" aria-valuemax="100">
+                        <div class="progress-fill" style="width: 68%;"></div>
+                    </div>
+                    <p id="mood-description" class="progress-description">68% de satisfaction équipe</p>
+                </section>
+
+                <!-- Feedback quotidien -->
+                <section class="card animate-in" style="animation-delay: 0.1s;" aria-labelledby="feedback-title">
+                    <header class="card-header">
+                        <div class="card-icon" aria-hidden="true">💬</div>
+                        <h2 class="card-title" id="feedback-title">Feedback Quotidien</h2>
+                    </header>
+
+                    <form class="feedback-form" id="feedbackForm" novalidate>
+                        <div class="input-group">
+                            <label for="feedbackCategory">Catégorie *</label>
+                            <select class="form-control" id="feedbackCategory" required aria-required="true">
+                                <option value="">Sélectionner...</option>
+                                <option value="management">Management</option>
+                                <option value="workload">Charge de travail</option>
+                                <option value="environment">Environnement</option>
+                                <option value="communication">Communication</option>
+                                <option value="tools">Outils</option>
+                            </select>
+                        </div>
+
+                        <div class="input-group">
+                            <label for="feedbackMessage">Votre feedback *</label>
+                            <textarea class="form-control" id="feedbackMessage" 
+                                    placeholder="Partagez votre retour d'expérience..." 
+                                    required aria-required="true" maxlength="500"></textarea>
+                            <small class="char-counter">0/500 caractères</small>
+                        </div>
+
+                        <div class="input-group">
+                            <label for="feedbackPriority">Priorité</label>
+                            <select class="form-control" id="feedbackPriority">
+                                <option value="low">Faible</option>
+                                <option value="medium" selected>Moyenne</option>
+                                <option value="high">Haute</option>
+                            </select>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary">
+                            <span id="feedbackBtnText">Envoyer Feedback</span>
+                        </button>
+                    </form>
+                </section>
+
+                <!-- Statistiques -->
+                <aside class="card animate-in" style="animation-delay: 0.2s;" aria-labelledby="stats-title">
+                    <header class="card-header">
+                        <div class="card-icon" aria-hidden="true">📊</div>
+                        <h2 class="card-title" id="stats-title">Vue d'ensemble</h2>
+                    </header>
+
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <div class="stat-number" id="totalEmployees" aria-label="42 employés">42</div>
+                            <div class="stat-label">Employés</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-number" id="feedbackCount" aria-label="18 feedbacks reçus">18</div>
+                            <div class="stat-label">Feedback Reçus</div>
+                        </div>
+                    </div>
+
+                    <div class="survey-list">
+                        <article class="survey-item">
+                            <h3 class="survey-title">Sondage Télétravail</h3>
+                            <div class="survey-meta">
+                                <span>15/42 réponses</span>
+                                <span class="survey-status status-active">Actif</span>
+                            </div>
+                        </article>
+                        <article class="survey-item">
+                            <h3 class="survey-title">Évaluation Manager</h3>
+                            <div class="survey-meta">
+                                <span>8/15 réponses</span>
+                                <span class="survey-status status-pending">En attente</span>
+                            </div>
+                        </article>
+                    </div>
+                </aside>
+            </div>
+
+            <!-- Section formations -->
+            <div class="bottom-grid">
+                <section class="card animate-in" style="animation-delay: 0.3s;" aria-labelledby="training-title">
+                    <header class="card-header">
+                        <div class="card-icon" aria-hidden="true">🎓</div>
+                        <h2 class="card-title" id="training-title">Évaluations Formation</h2>
+                    </header>
+
+                    <div id="trainingList">
+                        <article class="training-item">
+                            <div class="training-info">
+                                <h3>Formation Leadership</h3>
+                                <time class="training-date" datetime="2025-09-12">Terminée le 12/09/2025</time>
+                            </div>
+                            <div class="rating-stars" aria-label="4 étoiles sur 5">
+                                <span class="star" aria-hidden="true">★</span>
+                                <span class="star" aria-hidden="true">★</span>
+                                <span class="star" aria-hidden="true">★</span>
+                                <span class="star" aria-hidden="true">★</span>
+                                <span class="star" aria-hidden="true">☆</span>
+                            </div>
+                        </article>
+
+                        <article class="training-item">
+                            <div class="training-info">
+                                <h3>Gestion du Temps</h3>
+                                <div class="training-date">En cours</div>
+                            </div>
+                            <div class="rating-stars" aria-label="5 étoiles sur 5">
+                                <span class="star" aria-hidden="true">★</span>
+                                <span class="star" aria-hidden="true">★</span>
+                                <span class="star" aria-hidden="true">★</span>
+                                <span class="star" aria-hidden="true">★</span>
+                                <span class="star" aria-hidden="true">★</span>
+                            </div>
+                        </article>
+
+                        <article class="training-item">
+                            <div class="training-info">
+                                <h3>Communication Interne</h3>
+                                <time class="training-date" datetime="2025-09-20">Prévue le 20/09/2025</time>
+                            </div>
+                            <div class="rating-stars" aria-label="Non évalué">
+                                <span class="star empty" aria-hidden="true">☆</span>
+                                <span class="star empty" aria-hidden="true">☆</span>
+                                <span class="star empty" aria-hidden="true">☆</span>
+                                <span class="star empty" aria-hidden="true">☆</span>
+                                <span class="star empty" aria-hidden="true">☆</span>
+                            </div>
+                        </article>
+                    </div>
+                </section>
+
+                <section class="card animate-in" style="animation-delay: 0.4s;" aria-labelledby="surveys-title">
+                    <header class="card-header">
+                        <div class="card-icon" aria-hidden="true">📋</div>
+                        <h2 class="card-title" id="surveys-title">Sondages Internes</h2>
+                    </header>
+
+                    <div class="survey-list">
+                        <article class="survey-item interactive" tabindex="0" role="button" 
+                                onclick="openSurvey('teleworking')" 
+                                onkeydown="handleKeyPress(event, 'openSurvey', 'teleworking')">
+                            <h3 class="survey-title">Satisfaction Télétravail</h3>
+                            <div class="survey-meta">
+                                <span>28/42 réponses (67%)</span>
+                                <span class="survey-status status-active">Actif</span>
+                            </div>
+                            <div class="progress-bar" role="progressbar" aria-valuenow="67" aria-valuemin="0" aria-valuemax="100">
+                                <div class="progress-fill" style="width: 67%;"></div>
+                            </div>
+                        </article>
+
+                        <article class="survey-item interactive" tabindex="0" role="button" 
+                                onclick="openSurvey('cafeteria')"
+                                onkeydown="handleKeyPress(event, 'openSurvey', 'cafeteria')">
+                            <h3 class="survey-title">Qualité Cafétéria</h3>
+                            <div class="survey-meta">
+                                <span>35/42 réponses (83%)</span>
+                                <span class="survey-status status-active">Actif</span>
+                            </div>
+                            <div class="progress-bar" role="progressbar" aria-valuenow="83" aria-valuemin="0" aria-valuemax="100">
+                                <div class="progress-fill" style="width: 83%;"></div>
+                            </div>
+                        </article>
+
+                        <article class="survey-item interactive" tabindex="0" role="button" 
+                                onclick="openSurvey('benefits')"
+                                onkeydown="handleKeyPress(event, 'openSurvey', 'benefits')">
+                            <h3 class="survey-title">Avantages Sociaux</h3>
+                            <div class="survey-meta">
+                                <span>12/42 réponses (29%)</span>
+                                <span class="survey-status status-pending">Nouveau</span>
+                            </div>
+                            <div class="progress-bar" role="progressbar" aria-valuenow="29" aria-valuemin="0" aria-valuemax="100">
+                                <div class="progress-fill" style="width: 29%;"></div>
+                            </div>
+                        </article>
+                    </div>
+
+                    <button class="btn btn-primary" style="margin-top: 20px;" onclick="createSurvey()">
+                        + Créer un sondage
+                    </button>
+                </section>
+            </div>
+        </main>
+    </div>
+
+    <!-- Notification -->
+    <div class="notification" id="notification" role="alert" aria-live="polite">
+        <span id="notificationText">Action réalisée avec succès !</span>
+    </div>
+
+    <!-- Scripts -->
+    <script src="config/supabase.js"></script>
+    <script src="assets/js/database.js"></script>
+    <script src="assets/js/api.js"></script>
+    <script src="assets/js/utils.js"></script>
+    <script src="assets/js/app.js"></script>
+</body>
+</html>
