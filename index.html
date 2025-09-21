@@ -6,8 +6,166 @@
     <title>RH Dashboard - Gestion d'Équipe</title>
     <link rel="stylesheet" href="assets/css/styles.css">
     <link rel="stylesheet" href="assets/css/responsive.css">
+    <!-- Supabase CDN - DOIT être chargé en premier -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <meta name="description" content="Dashboard RH pour la gestion d'équipe, feedback et sondages">
     <meta name="keywords" content="RH, dashboard, feedback, sondages, équipe, management">
+    
+    <!-- Styles additionnels pour les modales et corrections -->
+    <style>
+        .error {
+            border-color: var(--danger) !important;
+            box-shadow: 0 0 0 3px rgba(245, 101, 101, 0.1) !important;
+        }
+
+        .error-message {
+            color: var(--danger);
+            font-size: 12px;
+            margin-top: 4px;
+            font-weight: 500;
+        }
+
+        .modal-overlay {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0,0,0,0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            padding: 20px;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: 15px;
+            max-width: 600px;
+            width: 100%;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+            transform: scale(0.9);
+            opacity: 0;
+            transition: all 0.3s ease;
+        }
+
+        .modal-overlay.show .modal-content {
+            transform: scale(1);
+            opacity: 1;
+        }
+
+        .modal-header {
+            padding: 20px 30px;
+            border-bottom: 1px solid #e2e8f0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .modal-header h3 {
+            margin: 0;
+            font-size: 18px;
+            font-weight: 600;
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            color: var(--gray);
+            padding: 5px;
+            border-radius: 50%;
+            width: 35px;
+            height: 35px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-close:hover {
+            background: var(--light-gray);
+            color: var(--dark);
+        }
+
+        .modal-body {
+            padding: 30px;
+        }
+
+        .modal-footer {
+            padding: 20px 30px;
+            border-top: 1px solid #e2e8f0;
+            display: flex;
+            gap: 10px;
+            justify-content: flex-end;
+        }
+
+        .question-item {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 10px;
+            align-items: center;
+        }
+
+        .btn-small {
+            padding: 5px 10px;
+            font-size: 12px;
+            min-width: auto;
+        }
+
+        .btn-danger {
+            background: var(--danger);
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background: #e53e3e;
+        }
+
+        .btn-secondary {
+            background: var(--gray);
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background: #4a5568;
+        }
+
+        .survey-form .input-group {
+            margin-bottom: 20px;
+        }
+
+        .questions-list {
+            margin-bottom: 15px;
+        }
+
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top-color: var(--white);
+            animation: spin 1s ease-in-out infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* Animation pour la sélection d'humeur */
+        .mood-option.selected {
+            transform: scale(1.05);
+        }
+
+        .mood-option:hover {
+            transform: scale(1.02);
+        }
+
+        .mood-option {
+            transition: all 0.2s ease;
+        }
+    </style>
 </head>
 <body>
     <div class="container">
@@ -37,11 +195,11 @@
                     </header>
                     
                     <div class="mood-selector" id="moodSelector" role="radiogroup" aria-labelledby="mood-title">
-                        <div class="mood-option" data-mood="1" role="radio" aria-checked="false" tabindex="0">
+                        <div class="mood-option" data-mood="1" role="radio" aria-checked="false" tabindex="-1">
                             <div class="mood-emoji" aria-hidden="true">😢</div>
                             <div class="mood-label">Triste</div>
                         </div>
-                        <div class="mood-option" data-mood="2" role="radio" aria-checked="false" tabindex="0">
+                        <div class="mood-option" data-mood="2" role="radio" aria-checked="false" tabindex="-1">
                             <div class="mood-emoji" aria-hidden="true">😕</div>
                             <div class="mood-label">Moyen</div>
                         </div>
@@ -49,17 +207,17 @@
                             <div class="mood-emoji" aria-hidden="true">😐</div>
                             <div class="mood-label">Neutre</div>
                         </div>
-                        <div class="mood-option" data-mood="4" role="radio" aria-checked="false" tabindex="0">
+                        <div class="mood-option" data-mood="4" role="radio" aria-checked="false" tabindex="-1">
                             <div class="mood-emoji" aria-hidden="true">😊</div>
                             <div class="mood-label">Content</div>
                         </div>
-                        <div class="mood-option" data-mood="5" role="radio" aria-checked="false" tabindex="0">
+                        <div class="mood-option" data-mood="5" role="radio" aria-checked="false" tabindex="-1">
                             <div class="mood-emoji" aria-hidden="true">😄</div>
                             <div class="mood-label">Excellent</div>
                         </div>
                     </div>
 
-                    <button class="btn btn-primary" onclick="submitMood()" aria-describedby="mood-description">
+                    <button class="btn btn-primary" id="submitMoodBtn" type="button" aria-describedby="mood-description">
                         <span id="moodBtnText">Enregistrer</span>
                     </button>
 
@@ -106,7 +264,7 @@
                             </select>
                         </div>
 
-                        <button type="submit" class="btn btn-primary">
+                        <button type="submit" class="btn btn-primary" id="submitFeedbackBtn">
                             <span id="feedbackBtnText">Envoyer Feedback</span>
                         </button>
                     </form>
@@ -209,9 +367,7 @@
                     </header>
 
                     <div class="survey-list">
-                        <article class="survey-item interactive" tabindex="0" role="button" 
-                                onclick="openSurvey('teleworking')" 
-                                onkeydown="handleKeyPress(event, 'openSurvey', 'teleworking')">
+                        <article class="survey-item interactive" tabindex="0" role="button" id="survey-teleworking">
                             <h3 class="survey-title">Satisfaction Télétravail</h3>
                             <div class="survey-meta">
                                 <span>28/42 réponses (67%)</span>
@@ -222,9 +378,7 @@
                             </div>
                         </article>
 
-                        <article class="survey-item interactive" tabindex="0" role="button" 
-                                onclick="openSurvey('cafeteria')"
-                                onkeydown="handleKeyPress(event, 'openSurvey', 'cafeteria')">
+                        <article class="survey-item interactive" tabindex="0" role="button" id="survey-cafeteria">
                             <h3 class="survey-title">Qualité Cafétéria</h3>
                             <div class="survey-meta">
                                 <span>35/42 réponses (83%)</span>
@@ -235,9 +389,7 @@
                             </div>
                         </article>
 
-                        <article class="survey-item interactive" tabindex="0" role="button" 
-                                onclick="openSurvey('benefits')"
-                                onkeydown="handleKeyPress(event, 'openSurvey', 'benefits')">
+                        <article class="survey-item interactive" tabindex="0" role="button" id="survey-benefits">
                             <h3 class="survey-title">Avantages Sociaux</h3>
                             <div class="survey-meta">
                                 <span>12/42 réponses (29%)</span>
@@ -249,7 +401,7 @@
                         </article>
                     </div>
 
-                    <button class="btn btn-primary" style="margin-top: 20px;" onclick="createSurvey()">
+                    <button class="btn btn-primary" style="margin-top: 20px;" id="createSurveyBtn" type="button">
                         + Créer un sondage
                     </button>
                 </section>
@@ -262,11 +414,201 @@
         <span id="notificationText">Action réalisée avec succès !</span>
     </div>
 
-    <!-- Scripts -->
+    <!-- Scripts dans le bon ordre -->
     <script src="config/supabase.js"></script>
     <script src="assets/js/database.js"></script>
     <script src="assets/js/api.js"></script>
     <script src="assets/js/utils.js"></script>
     <script src="assets/js/app.js"></script>
+
+    <!-- Script d'initialisation avec gestion des événements -->
+    <script>
+        // Variables globales
+        let dashboardInstance = null;
+
+        // Fonction d'initialisation
+        async function initializeDashboard() {
+            try {
+                console.log('🚀 Initialisation du Dashboard...');
+                
+                // Créer l'instance du dashboard
+                dashboardInstance = new HRDashboard();
+                await dashboardInstance.init();
+
+                // Configurer les event listeners après l'initialisation
+                setupEventListeners();
+
+                console.log('✅ Dashboard initialisé avec succès');
+            } catch (error) {
+                console.error('❌ Erreur d\'initialisation:', error);
+            }
+        }
+
+        // Configuration des event listeners
+        function setupEventListeners() {
+            // Baromètre d'humeur
+            const moodOptions = document.querySelectorAll('.mood-option');
+            moodOptions.forEach(option => {
+                option.addEventListener('click', function() {
+                    selectMoodOption(this);
+                });
+                
+                option.addEventListener('keydown', function(e) {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault();
+                        selectMoodOption(this);
+                    }
+                });
+            });
+
+            // Bouton enregistrer humeur
+            const submitMoodBtn = document.getElementById('submitMoodBtn');
+            if (submitMoodBtn) {
+                submitMoodBtn.addEventListener('click', submitMood);
+            }
+
+            // Formulaire feedback
+            const feedbackForm = document.getElementById('feedbackForm');
+            if (feedbackForm) {
+                feedbackForm.addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    submitFeedback();
+                });
+            }
+
+            // Compteur de caractères pour le feedback
+            const feedbackMessage = document.getElementById('feedbackMessage');
+            const charCounter = document.querySelector('.char-counter');
+            if (feedbackMessage && charCounter) {
+                feedbackMessage.addEventListener('input', function() {
+                    const length = this.value.length;
+                    charCounter.textContent = `${length}/500 caractères`;
+                    
+                    if (length > 450) {
+                        charCounter.style.color = 'var(--warning)';
+                    } else if (length > 500) {
+                        charCounter.style.color = 'var(--danger)';
+                    } else {
+                        charCounter.style.color = 'var(--gray)';
+                    }
+                });
+            }
+
+            // Bouton créer sondage
+            const createSurveyBtn = document.getElementById('createSurveyBtn');
+            if (createSurveyBtn) {
+                createSurveyBtn.addEventListener('click', createSurvey);
+            }
+
+            // Sondages interactifs
+            const surveyItems = document.querySelectorAll('.survey-item.interactive');
+            surveyItems.forEach(item => {
+                item.addEventListener('click', function() {
+                    const surveyType = this.id.replace('survey-', '');
+                    openSurvey(surveyType);
+                });
+                
+                item.addEventListener('keydown', function(e) {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault();
+                        const surveyType = this.id.replace('survey-', '');
+                        openSurvey(surveyType);
+                    }
+                });
+            });
+
+            console.log('✅ Event listeners configurés');
+        }
+
+        // Sélection d'humeur
+        function selectMoodOption(option) {
+            // Retirer toutes les sélections
+            document.querySelectorAll('.mood-option').forEach(opt => {
+                opt.classList.remove('selected');
+                opt.setAttribute('aria-checked', 'false');
+                opt.setAttribute('tabindex', '-1');
+            });
+            
+            // Sélectionner la nouvelle option
+            option.classList.add('selected');
+            option.setAttribute('aria-checked', 'true');
+            option.setAttribute('tabindex', '0');
+            
+            // Mettre à jour la sélection dans l'instance
+            if (dashboardInstance) {
+                dashboardInstance.selectedMood = parseInt(option.dataset.mood);
+                console.log('✅ Humeur sélectionnée:', dashboardInstance.selectedMood);
+            }
+        }
+
+        // Fonctions globales pour les boutons
+        async function submitMood() {
+            if (dashboardInstance && dashboardInstance.submitMood) {
+                await dashboardInstance.submitMood();
+            } else {
+                console.error('❌ Dashboard non initialisé ou méthode manquante');
+                showNotification('Erreur: Dashboard non initialisé', 'error');
+            }
+        }
+
+        async function submitFeedback() {
+            if (dashboardInstance && dashboardInstance.submitFeedback) {
+                await dashboardInstance.submitFeedback();
+            } else {
+                console.error('❌ Dashboard non initialisé ou méthode manquante');
+                showNotification('Erreur: Dashboard non initialisé', 'error');
+            }
+        }
+
+        async function createSurvey() {
+            if (dashboardInstance && dashboardInstance.createSurvey) {
+                await dashboardInstance.createSurvey();
+            } else {
+                console.error('❌ Dashboard non initialisé ou méthode manquante');
+                showNotification('Erreur: Dashboard non initialisé', 'error');
+            }
+        }
+
+        async function openSurvey(surveyType) {
+            if (dashboardInstance && dashboardInstance.openSurvey) {
+                await dashboardInstance.openSurvey(surveyType);
+            } else {
+                console.error('❌ Dashboard non initialisé ou méthode manquante');
+                showNotification('Erreur: Dashboard non initialisé', 'error');
+            }
+        }
+
+        // Fonction d'affichage des notifications
+        function showNotification(message, type = 'success') {
+            const notification = document.getElementById('notification');
+            const notificationText = document.getElementById('notificationText');
+            
+            if (!notification || !notificationText) return;
+            
+            const colors = {
+                success: '#48bb78',
+                error: '#f56565',
+                warning: '#ed8936',
+                info: '#667eea'
+            };
+            
+            notification.style.background = colors[type] || colors.success;
+            notificationText.textContent = message;
+            notification.classList.add('show');
+            
+            setTimeout(() => {
+                notification.classList.remove('show');
+            }, 4000);
+        }
+
+        // Initialisation au chargement de la page
+        document.addEventListener('DOMContentLoaded', initializeDashboard);
+
+        // Export pour le debug
+        window.dashboardInstance = () => dashboardInstance;
+        window.showNotification = showNotification;
+
+        console.log('📋 index.html corrigé - Prêt pour l\'initialisation');
+    </script>
 </body>
 </html>

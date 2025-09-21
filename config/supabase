@@ -1,4 +1,5 @@
 const supabaseConfig = {
     url: 'https://sztbqhtwbpuakrciatcl.supabase.co',
-    anonKey:  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InN6dGJxaHR3YnB1YWtyY2lhdGNsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTgwMDcyMjAsImV4cCI6MjA3MzU4MzIyMH0.rZDGgjQ6KUhtozgUitj9uR_mrEjw45MmpY69dB7poMo '
+    anonKey:  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InN6dGJxaHR3YnB1YWtyY2lhdGNsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTgwMDcyMjAsImV4cCI6MjA3MzU4MzIyMH0.rZDGgjQ6KUhtozgUitj9uR_mrEjw45MmpY69dB7poMo ',
+    connected: true // ← Activez la vraie connexion
 };
