@@ -32,8 +32,7 @@ jobs:
       - name: 🔒 Injection des secrets (Configuration Supabase)
         run: |
           echo "🔑 Création du fichier de configuration sécurisé..."
-          mkdir -p Gestion_equipe_RH
-          cat > Gestion_equipe_RH/private-config.js << 'EOF'
+          cat > private-config.js << 'EOF'
           // Configuration générée automatiquement par GitHub Actions
           window.PRIVATE_CONFIG = {
             mode: 'supabase',
@@ -53,49 +52,40 @@ jobs:
       - name: 📝 Modification de l'HTML pour charger la configuration
         run: |
           echo "🔧 Injection de la référence au fichier de configuration..."
-          sed -i 's|<!-- PRIVATE_CONFIG_PLACEHOLDER -->|<script src="private-config.js"></script>|g' Gestion_equipe_RH/index.html
-          if [ -f Gestion_equipe_RH/test.html ]; then
-            sed -i 's|<!-- PRIVATE_CONFIG_PLACEHOLDER -->|<script src="private-config.js"></script>|g' Gestion_equipe_RH/test.html
+          sed -i 's|<!-- PRIVATE_CONFIG_PLACEHOLDER -->|<script src="private-config.js"></script>|g' index.html
+          if [ -f test.html ]; then
+            sed -i 's|<!-- PRIVATE_CONFIG_PLACEHOLDER -->|<script src="private-config.js"></script>|g' test.html
             echo "✅ test.html modifié pour utiliser la configuration sécurisée"
           fi
           echo "✅ HTML modifié pour utiliser la configuration sécurisée"
 
       - name: 🧹 Nettoyage des fichiers sensibles
         run: |
-          rm -f Gestion_equipe_RH/private-config.template.js 2>/dev/null || true
-          rm -f Gestion_equipe_RH/index-supabase-secure.html 2>/dev/null || true
+          rm -f private-config.template.js 2>/dev/null || true
+          rm -f index-supabase-secure.html 2>/dev/null || true
           echo "🗑️ Fichiers de développement nettoyés"
 
       - name: 📋 Vérification de sécurité
         run: |
           echo "🔍 Vérification finale de sécurité..."
-          if grep -r "VOTRE_PROJECT_REF\|VOTRE_ANON_KEY\|your-project\|your-anon-key" Gestion_equipe_RH --exclude-dir=.git; then
+          if grep -r "VOTRE_PROJECT_REF\|VOTRE_ANON_KEY\|your-project\|your-anon-key" . --exclude-dir=.git; then
             echo "❌ ERREUR: Des placeholders ont été détectés !"
             exit 1
           fi
-          if ! grep -q "window.PRIVATE_CONFIG" Gestion_equipe_RH/private-config.js; then
+          if ! grep -q "window.PRIVATE_CONFIG" private-config.js; then
             echo "❌ ERREUR: Configuration non injectée !"
             exit 1
           fi
-          if grep -q "SUPABASE_URL\|SUPABASE_ANON_KEY" Gestion_equipe_RH/private-config.js; then
+          if grep -q "SUPABASE_URL\|SUPABASE_ANON_KEY" private-config.js; then
             echo "❌ ERREUR: Les secrets n'ont pas été remplacés !"
             exit 1
           fi
           echo "✅ Vérification de sécurité réussie"
 
-      - name: 📊 Informations de build
-        run: |
-          echo "📦 Informations du déploiement:"
-          echo "  📅 Date: $(date)"
-          echo "  🔗 Commit: ${{ github.sha }}"
-          echo "  👤 Auteur: ${{ github.actor }}"
-          echo "  🌐 URL cible: https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}"
-          echo "  ⚡ Mode: Collaboratif Supabase"
-
       - name: 📤 Téléversement des artefacts
         uses: actions/upload-pages-artifact@v3
         with:
-          path: 'Gestion_equipe_RH'
+          path: '.'
 
       - name: 🚀 Déploiement vers GitHub Pages
         id: deployment
