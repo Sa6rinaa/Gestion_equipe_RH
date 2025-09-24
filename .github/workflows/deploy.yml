@@ -68,7 +68,7 @@ jobs:
       - name: 📋 Vérification de sécurité
         run: |
           echo "🔍 Vérification finale de sécurité..."
-          if grep -r "VOTRE_PROJECT_REF\|VOTRE_ANON_KEY\|your-project\|your-anon-key" . --exclude-dir=.git; then
+          if grep -r "VOTRE_PROJECT_REF\|VOTRE_ANON_KEY\|your-project\|your-anon-key" . --exclude-dir=.git --exclude=./.github/workflows/deploy.yml; then
             echo "❌ ERREUR: Des placeholders ont été détectés !"
             exit 1
           fi
