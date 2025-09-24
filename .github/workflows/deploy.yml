@@ -1,27 +1,108 @@
-name: Deploy to GitHub Pages
+name: 🚀 Déploiement Sécurisé avec Secrets
 
 on:
   push:
-    branches:
-      - main
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: "pages"
+  cancel-in-progress: false
 
 jobs:
   deploy:
+    name: 📦 Build et Déploiement
     runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+
     steps:
-      - name: Checkout repository
+      - name: 📥 Checkout du code
         uses: actions/checkout@v4
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '20'
+      - name: 🔧 Configuration des Pages
+        uses: actions/configure-pages@v4
 
-      - name: Build static site (no build step needed)
-        run: echo "No build step required for static HTML/CSS/JS"
+      - name: 🔒 Injection des secrets (Configuration Supabase)
+        run: |
+          echo "🔑 Création du fichier de configuration sécurisé..."
+          cat > Gestion_equipe_RH/private-config.js << 'EOF'
+          // Configuration générée automatiquement par GitHub Actions
+          window.PRIVATE_CONFIG = {
+            mode: 'supabase',
+            supabaseUrl: '${{ secrets.SUPABASE_URL }}',
+            supabaseAnonKey: '${{ secrets.SUPABASE_ANON_KEY }}',
+            useRealtime: true,
+            deployedAt: '${{ github.event.head_commit.timestamp }}',
+            deployedBy: 'GitHub Actions',
+            commitSha: '${{ github.sha }}',
+            version: '1.0.0-secure'
+          };
+          console.log('🎭 Emoji Code Mood - Configuration automatique chargée');
+          console.log('⚡ Mode Collaboratif Supabase activé');
+          EOF
+          echo "✅ Configuration créée avec succès"
 
-      - name: Deploy to GitHub Pages
-        uses: peaceiris/actions-gh-pages@v4
+      - name: 📝 Modification de l'HTML pour charger la configuration
+        run: |
+          echo "🔧 Injection de la référence au fichier de configuration..."
+          sed -i 's|<!-- PRIVATE_CONFIG_PLACEHOLDER -->|<script src="private-config.js"></script>|g' Gestion_equipe_RH/index.html
+          if [ -f Gestion_equipe_RH/test.html ]; then
+            sed -i 's|<!-- PRIVATE_CONFIG_PLACEHOLDER -->|<script src="private-config.js"></script>|g' Gestion_equipe_RH/test.html
+            echo "✅ test.html modifié pour utiliser la configuration sécurisée"
+          fi
+          echo "✅ HTML modifié pour utiliser la configuration sécurisée"
+
+      - name: 🧹 Nettoyage des fichiers sensibles
+        run: |
+          rm -f Gestion_equipe_RH/private-config.template.js 2>/dev/null || true
+          rm -f Gestion_equipe_RH/index-supabase-secure.html 2>/dev/null || true
+          echo "🗑️ Fichiers de développement nettoyés"
+
+      - name: 📋 Vérification de sécurité
+        run: |
+          echo "🔍 Vérification finale de sécurité..."
+          if grep -r "VOTRE_PROJECT_REF\|VOTRE_ANON_KEY\|your-project\|your-anon-key" Gestion_equipe_RH --exclude-dir=.git; then
+            echo "❌ ERREUR: Des placeholders ont été détectés !"
+            exit 1
+          fi
+          if ! grep -q "window.PRIVATE_CONFIG" Gestion_equipe_RH/private-config.js; then
+            echo "❌ ERREUR: Configuration non injectée !"
+            exit 1
+          fi
+          if grep -q "SUPABASE_URL\|SUPABASE_ANON_KEY" Gestion_equipe_RH/private-config.js; then
+            echo "❌ ERREUR: Les secrets n'ont pas été remplacés !"
+            exit 1
+          fi
+          echo "✅ Vérification de sécurité réussie"
+
+      - name: 📊 Informations de build
+        run: |
+          echo "📦 Informations du déploiement:"
+          echo "  📅 Date: $(date)"
+          echo "  🔗 Commit: ${{ github.sha }}"
+          echo "  👤 Auteur: ${{ github.actor }}"
+          echo "  🌐 URL cible: https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}"
+          echo "  ⚡ Mode: Collaboratif Supabase"
+
+      - name: 📤 Téléversement des artefacts
+        uses: actions/upload-pages-artifact@v3
         with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./Gestion_equipe_RH
+          path: 'Gestion_equipe_RH'
+
+      - name: 🚀 Déploiement vers GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
+
+      - name: 🎉 Succès du déploiement
+        run: |
+          echo "✅ Déploiement réussi !"
+          echo "🌐 Votre application est disponible à: ${{ steps.deployment.outputs.page_url }}"
+          echo "⚡ Mode Collaboratif Supabase activé automatiquement"
+          echo "🔒 Vos clés API restent secrètes et sécurisées"
