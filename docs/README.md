@@ -313,6 +313,27 @@ SUPABASE_ANON_KEY=votre-cle-publique
 ENVIRONMENT=production
 ```
 
+### Déploiement sur GitHub Pages
+
+Si vous déployez sur GitHub Pages et que vous rencontrez une erreur 403, suivez ces étapes :
+
+- Assurez-vous d’avoir activé les permissions d’écriture pour GitHub Actions dans les paramètres du dépôt :
+  - Allez dans **Settings > Actions > General > Workflow permissions**
+  - Sélectionnez **Read and write permissions**
+- Si vous utilisez un token personnel (PAT) pour plus de sécurité ou pour des cas particuliers, ajoutez-le dans les secrets GitHub sous le nom `GH_PAGES_TOKEN` et modifiez le workflow comme suit :
+
+```yaml
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GH_PAGES_TOKEN }}
+          publish_dir: ./Gestion_equipe_RH
+```
+
+- Sinon, le token par défaut (`GITHUB_TOKEN`) suffit pour un dépôt public si les permissions sont bien configurées.
+
+Si vous rencontrez encore l’erreur, vérifiez que vous avez bien les droits d’administration sur le dépôt et que la branche `gh-pages` n’est pas protégée.
+
 ## 📚 Documentation Complète
 
 - [Guide d'installation détaillé](docs/installation.md)
@@ -341,11 +362,6 @@ Les contributions sont les bienvenues ! Consultez notre [guide de contribution](
 
 Ce projet est sous licence MIT. Voir le fichier [LICENSE](LICENSE) pour plus de détails.
 
-## 🙏 Remerciements
-
-- [Supabase](https://supabase.com) pour l'infrastructure backend
-- [Lucide](https://lucide.dev) pour les icônes
-- La communauté open source pour l'inspiration
 
 ---
 
