@@ -32,6 +32,7 @@ jobs:
       - name: 🔒 Injection des secrets (Configuration Supabase)
         run: |
           echo "🔑 Création du fichier de configuration sécurisé..."
+          mkdir -p Gestion_equipe_RH
           cat > Gestion_equipe_RH/private-config.js << 'EOF'
           // Configuration générée automatiquement par GitHub Actions
           window.PRIVATE_CONFIG = {
